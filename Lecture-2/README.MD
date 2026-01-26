@@ -1,0 +1,1 @@
+This folder contains materials relating to the second lecture. We covered force fields, computational considerations like PBCs and MIC, cut offs, neighbor lists, and PME, and we talked about how one would thermostat or barostat a system.
