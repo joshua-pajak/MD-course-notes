@@ -1,0 +1,1 @@
+In Lecture 3 we discussed typical files you'll often seen in MD simulations (topology, coordinates, and input). We discussed how these files look and what information they contain across popular MD engines (AMBER, GROMACS, NAMD, OpenMM).
