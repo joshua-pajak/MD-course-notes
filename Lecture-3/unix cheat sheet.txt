@@ -1,0 +1,57 @@
+UNIX commands:
+ls: list directory
+ 	will list all files and sub-directories in specified directory
+ 	pass with no argument to list contents of current directory
+ 	'ls -lh' is often helpful for seeing dates & file sizes
+
+cd: change directory
+ 	allows you to move your working directory into sub-directories or parent directories (using ..)
+ 	can change multiple directories at once (e.g., cd ../../../system2/GROMACS/run2)
+
+pwd: print working directory
+ 	will output your current working directory to the terminal
+
+mv: move a file from one place to another (positional arguments)
+
+cp: copy a file from one place to another (positional arguments)
+
+nano: an in-terminal text editor, good for quick edits to scripts
+
+ssh: secure shell
+ 	allows you to remotely access another computer or cluster through a secure connection
+
+sftp: secure file transfer protocol
+ 	allows you to send and receive files from another computer/cluster securely
+ 	use 'get' and 'put' to get files from the remote server and to put files from the local host onto the server
+
+rsync: remote sync
+ 	allows you to send and receive (sync) files between two computers, faster than sftp
+
+The Tab key is very useful, it will autocomplete commands for you based on names of files/directories within your current directory.
+
+Adding a '&' to the end of a command will tell Unix/bash to run the command in the background.
+
+
+
+Understanding flags:
+Unix commands will often need arguments for what they should act on. These arguments can be 'positional' arguments,
+which means that there is a set order to how you pass the arguments. For instance, the Unix command 'cp' uses positional
+arguments: the first argument is always the source and the second is always the destination. For instance, if I wanted to
+copy the file 'topol.top' to the parent directory, I would type 'cp topol.top ../'
+
+For simple commands, positional arguments are fine. But once you start having more complicated commands, it is better practice
+to use "flags." Flags tell the code which specific arguments are where, so that the user doesn't have to remember the order of files.
+Flags are specified with a '-' (typically one letter) or '--' (typically word). For instance, if I wrote a code that requires
+a topology file, a pdb file, an input file, and an output file, I could write my code so that these three do the same exact thing:
+
+ 	command -t topol.top -p pdb.pdb -i input.input -o output.output
+ 	command -p pdb.pdb -i input.input -o output.output -t topol.top
+ 	command --topology topol.top --pdb pdb.pdb --input input.input --output output.output
+
+Codes will generally always have one letter flags and only sometimes use whole word flags.
+
+MD engines often use flags. For instance, the GPU accelerated AMBER engine pmemd will use a command like this:
+
+ 	pmemd.cuda -i input.mdin -p topol.prmtop -c input_coordinates.rst7 -o md_log.out -r output_coordinates.rst7 -x output_trajectory.nc
+
+Code will typically reserve '-h' and '--help' to provide a dictionary of all possible flags.
