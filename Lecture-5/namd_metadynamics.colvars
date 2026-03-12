@@ -1,0 +1,48 @@
+# --- Global parameters ---
+colvarsTrajFrequency    500    # How often to write CV values to the trajectory
+colvarsRestartFrequency 25000  # Match your NAMD restart frequency
+
+# --- CV 1: Alpha-helicity ---
+colvar {
+    name alpha_content
+    upperBoundary 1.0
+    upperWall 1.0
+    upperWallConstant 50
+    lowerBoundary 0.0
+    lowerWall 0.01
+    lowerWallConstant 50
+    width 0.1
+    alpha {
+        residueRange 402-412 
+    }
+}
+
+# --- CV 2: Distance between two domains ---
+colvar {
+    name domain_dist
+    upperBoundary 90
+    upperWall 90
+    upperWallConstant 50
+    lowerBoundary 40
+    lowerWall 40
+    lowerWallConstant 50
+    width 0.25
+    distance {
+        group1 { atomNameResidueRange CA 133-252 } 
+        group2 { atomNameResidueRange CA 262-380 } 
+    }
+}
+
+# --- Metadynamics Bias ---
+metadynamics {
+    colvars alpha_content domain_dist
+    
+    # Energy hill parameters
+    hillWidth 2.0
+    hillWeight 0.1           # Height of the hills in kcal/mol
+    newHillFrequency 1000     # Add a hill every 1000 steps (4 ps)
+    
+    # Optional: Well-tempered metadynamics (highly recommended)
+    wellTempered on
+    biasTemperature 3000      # Controls the rate of hill height decay
+}

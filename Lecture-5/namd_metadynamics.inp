@@ -1,0 +1,67 @@
+# NAMD Configuration File (e.g., simulation.namd)
+# Compatible with AMBER files (prmtop/inpcrd)
+
+# --- AMBER File Input ---
+amber           on				# user AMBER style files
+parmfile        c148s_dimer_hmr.prmtop		# Topology file
+ambercoor       c148s_dimer.inpcrd		# Coordinate file
+
+# --- Load files from equilibration ---
+set inputname		npt			
+binCoordinates		$inputname.coor		# load coordinates
+binVelocities		$inputname.vel		# load velocities
+extendedSystem		$inputname.xsc		# load PBC conditions
+
+# --- Force Field Parameters ---
+# Ensure exclusions match AMBER (usually 1-4 scaling)
+exclude         scaled1-4			# standard
+oneFourScaling  0.833333               		# for AMBER force fields
+
+# --- Simulation Parameters ---
+timestep        4.0			# 4 fs timestep for HMR
+rigidBonds      all               	# apply SHAKE to all bonds
+fullElectFrequency 1			# not doing RESPA because of HMR
+nonbondedFreq   1			# typical
+switching       off               	# Amber typically uses truncation, not switching
+cutoff          10.0			# standard AMBER cutoff
+pairlistDist    12.0			# good enough with a 10 A cutoff
+
+# --- PME and etc. ---
+wrapAll          on			# these three commands will reproduce the octahedron box shape
+wrapWater	 on			# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+wrapNearest	 on			# ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PME     yes				# correct long range with PME
+PMEInterpOrder  6			
+PMEGridSpacing  1.0			# grid spacing for PME of 1 A 
+
+# --- Constant T control ---
+langevin    on				# use Langevin dynamics to control T
+langevinDamping 1.0			# friction coefficient
+langevinTemp 310			# temperature, must match temperature in P control
+langevinHydrogen off			# if using SHAKE for hydrogens, don't couple to Langevin
+
+# --- Constant P control ---
+useGroupPressure yes
+langevinPiston	on
+langevinPistonTarget 1.01325
+langevinPistonPeriod 50.0
+langevinPistonDecay 25.0
+langevinPistonTemp 310
+
+# --- Collective Variables ---
+colvars on
+colvarsConfig metadynamics.colvars
+
+# --- Output ---
+outputName      wtm			# output name
+restartfreq     25000			# 100 ps
+dcdfreq         25000			# 100 ps
+dcdUnitCell	yes			# include PBC info in .dcd file
+xstFreq		25000			# 100 ps
+outputEnergies	25000			# 100 ps
+outputTiming	25000			# 100 ps
+
+# --- Minimize and equilibrate ---
+GPUResident	on		# do all calculations on GPU
+run 25000000;			# 100 ns equilibration
+
